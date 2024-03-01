@@ -44,7 +44,7 @@ export const accountFormSchema: FormSchema[] = [
   {
     label: '头像',
     field: 'avatar',
-    slot: 'avatarSolt',
+    slot: 'avatarSlot',
     defaultValue: defaultImg,
     component: 'Input',
   },

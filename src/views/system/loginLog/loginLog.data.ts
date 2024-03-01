@@ -1,7 +1,6 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
 import zhCn from 'moment/dist/locale/zh-cn';
+import { showTagByLoginType } from '/@/utils/show';
 
 export const columns: BasicColumn[] = [
   {
@@ -40,14 +39,11 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '日志类型',
-    dataIndex: 'operType',
+    dataIndex: 'type',
     width: 100,
     sorter: true,
     customRender: ({ record }) => {
-      const operType = record.operType;
-      const color = operType == 1 ? 'green' : operType == 2 ? 'red' : 'blue';
-      const text = operType == 1 ? '登录成功' : operType == 2 ? '登录失败' : '退出登录';
-      return h(Tag, { color: color }, () => text);
+      return showTagByLoginType(record.type);
     },
   },
   {
@@ -76,13 +72,13 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 4 },
   },
   {
-    field: 'operType',
+    field: 'type',
     label: '日志类型',
     component: 'Select',
     componentProps: {
       options: [
-        { label: '登录成功', value: 1 },
-        { label: '登录失败', value: 2 },
+        { label: '登录失败', value: 1 },
+        { label: '登录成功', value: 2 },
         { label: '退出登录', value: 3 },
       ],
     },

@@ -1,8 +1,8 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Image, Tag } from 'ant-design-vue';
+import { Image } from 'ant-design-vue';
 import zhCn from 'moment/dist/locale/zh-cn';
-import { providerMap } from '/@/enums/fileEnum';
+import { showTagByProvider } from '/@/utils/show';
 
 // 默认缩略图
 const defaultThumbnail = 'https://file.dandy.fun/20221103/0906file.png?imageMogr2/thumbnail/90x90';
@@ -62,7 +62,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'provider',
     width: 100,
     customRender: ({ record }) => {
-      return h(Tag, { color: 'blue' }, () => providerMap.get(record.provider) || '未知');
+      return showTagByProvider(record.provider);
     },
   },
   {
@@ -97,13 +97,19 @@ export const searchFormSchema: FormSchema[] = [
     field: 'keyword',
     label: '关键词',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: { span: 4 },
+    componentProps: {
+      placeholder: '文件名/备注',
+    },
   },
   {
     field: 'uploader',
     label: '上传者',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: { span: 4 },
+    componentProps: {
+      placeholder: '用户名/昵称',
+    },
   },
   {
     field: 'createdDate',

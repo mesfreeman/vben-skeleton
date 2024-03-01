@@ -8,7 +8,7 @@
     @ok="handleSubmit"
   >
     <BasicForm @register="registerForm">
-      <template #avatarSolt>
+      <template #avatarSlot>
         <Upload
           :headers="headers"
           :action="uploadUrl"
@@ -44,9 +44,10 @@
       const isUpdate = ref(true);
       const { createMessage } = useMessage();
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
-        labelWidth: 100,
+        labelWidth: 70,
         schemas: formSchema,
         showActionButtonGroup: false,
+        colon: true,
       });
 
       let avatarUrl = ref<string>(defaultImg);
@@ -69,16 +70,16 @@
       // 上传头像
       function handleUpload(info: any) {
         if (info.file.status === 'error') {
-          createMessage.error('头像上传失败', 3);
+          createMessage.error('头像上传失败');
           return;
         }
 
         if (info.file.status === 'done') {
           if (info.file.response.code === 0) {
-            avatarUrl.value = info.file.response.result.thumbail;
+            avatarUrl.value = info.file.response.result.thumbnail;
             return;
           }
-          createMessage.warning(info.file.response.message, 3);
+          createMessage.warning(info.file.response.message);
           return;
         }
       }
@@ -97,6 +98,7 @@
           if (result.id > 0) {
             closeDrawer();
             emit('success');
+            createMessage.success(getTitle.value + '成功');
           }
         } finally {
           setDrawerProps({ confirmLoading: false });
@@ -107,7 +109,6 @@
         registerDrawer,
         registerForm,
         getTitle,
-        defaultImg,
         avatarUrl,
         uploadUrl,
         handleUpload,

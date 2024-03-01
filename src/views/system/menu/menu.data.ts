@@ -1,12 +1,10 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
+import { showTagByCommonStatus, showTagByIsShow } from '/@/utils/show';
 
-const isDir = (type: number) => type === 1;
-const isMenu = (type: number) => type === 2;
-const isApi = (type: number) => type === 3;
-const isComponent = (mode: number) => mode === 1;
+export const isDir = (type: number) => type === 1;
+export const isMenu = (type: number) => type === 2;
+export const isApi = (type: number) => type === 3;
 
 export const columns: BasicColumn[] = [
   {
@@ -19,11 +17,7 @@ export const columns: BasicColumn[] = [
     title: '地址',
     dataIndex: 'path',
     align: 'left',
-  },
-  {
-    title: '组件',
-    dataIndex: 'component',
-    align: 'left',
+    slots: { customRender: 'pathSlot' },
   },
   {
     title: '排序',
@@ -31,26 +25,11 @@ export const columns: BasicColumn[] = [
     width: 80,
   },
   {
-    title: '类型',
-    dataIndex: 'type',
-    width: 80,
-    customRender: ({ record }) => {
-      const type = record.type;
-      const color = isDir(type) ? 'blue' : isMenu(type) ? 'green' : 'red';
-      const text = isDir(type) ? '目录' : isMenu(type) ? '菜单' : '接口';
-      return h(Tag, { color: color }, () => text);
-    },
-  },
-  {
     title: '显示',
     dataIndex: 'isShow',
     width: 80,
     customRender: ({ record }) => {
-      const isShow = record.isShow;
-      const enable = ~~isShow === 2;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '显示' : '隐藏';
-      return h(Tag, { color: color }, () => text);
+      return showTagByIsShow(record.isShow);
     },
   },
   {
@@ -58,16 +37,17 @@ export const columns: BasicColumn[] = [
     dataIndex: 'status',
     width: 80,
     customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 2;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '禁用';
-      return h(Tag, { color: color }, () => text);
+      return showTagByCommonStatus(record.status);
     },
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
+    width: 180,
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'createdAt',
     width: 180,
   },
 ];
@@ -77,7 +57,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'name',
     label: '菜单名称',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: { span: 5 },
   },
   {
     field: 'type',
@@ -91,7 +71,7 @@ export const searchFormSchema: FormSchema[] = [
         { label: '接口', value: 3 },
       ],
     },
-    colProps: { span: 6 },
+    colProps: { span: 5 },
   },
   {
     field: 'status',
@@ -103,7 +83,7 @@ export const searchFormSchema: FormSchema[] = [
         { label: '启用', value: 2 },
       ],
     },
-    colProps: { span: 6 },
+    colProps: { span: 5 },
   },
 ];
 
@@ -124,6 +104,7 @@ export const formSchema: FormSchema[] = [
   {
     field: 'type',
     label: '类型',
+    required: true,
     component: 'RadioButtonGroup',
     defaultValue: 1,
     componentProps: ({ formModel }) => {
@@ -137,13 +118,13 @@ export const formSchema: FormSchema[] = [
           try {
             const val = Number(e.target.value);
             if (isDir(val)) {
-              formModel.component = 'layout';
-            } else if (isMenu(val)) {
-              formModel.component = '';
+              formModel.mode = 1;
+              formModel.isShow = 2;
+              formModel.status = 2;
             } else if (isApi(val)) {
               formModel.mode = 1;
-              formModel.component = '';
               formModel.isShow = 1;
+              formModel.status = 2;
             }
           } catch (error) {}
         },
@@ -153,38 +134,14 @@ export const formSchema: FormSchema[] = [
   {
     field: 'icon',
     label: '图标',
+    subLabel: '(用于菜单栏显示)',
     component: 'IconPicker',
-    dynamicDisabled: ({ values }) => isApi(values.type),
-  },
-  {
-    field: 'mode',
-    label: '模式',
-    component: 'RadioButtonGroup',
-    defaultValue: 1,
-    componentProps: ({ formModel }) => {
-      return {
-        options: [
-          { label: '组件', value: 1 },
-          { label: '内链', value: 2 },
-          { label: '外链', value: 3 },
-        ],
-        onChange: (e: ChangeEvent) => {
-          try {
-            const val = Number(e.target.value);
-            if (isComponent(val)) {
-              formModel.component = '';
-            } else {
-              formModel.component = 'iframe';
-            }
-          } catch (error) {}
-        },
-      };
-    },
-    dynamicDisabled: ({ values }) => !isMenu(values.type),
+    show: ({ values }) => !isApi(values.type),
   },
   {
     field: 'pname',
     label: '上级',
+    subLabel: '(留空时表示为一级目录或菜单)',
     component: 'TreeSelect',
     componentProps: {
       replaceFields: {
@@ -201,39 +158,42 @@ export const formSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: 'isShow',
-    label: '显示',
-    component: 'RadioButtonGroup',
-    helpMessage: '开启显示时将会在侧边菜单栏显示',
-    defaultValue: 2,
-    componentProps: {
-      options: [
-        { label: '否', value: 1 },
-        { label: '是', value: 2 },
-      ],
-    },
-    dynamicDisabled: ({ values }) => isApi(values.type),
+    field: 'mode',
+    label: '模式',
+    component: 'Input',
+    defaultValue: 1,
+    show: false,
   },
   {
     field: 'path',
     label: '地址',
-    component: 'Input',
-    helpMessage: '路由或链接地址',
+    component: 'InputGroup',
     required: true,
+    slot: 'pathSlot',
   },
   {
     field: 'weight',
     label: '排序',
+    subLabel: '(数值越大越靠前)',
     component: 'InputNumber',
     defaultValue: 0,
-    helpMessage: '数值越大菜单越靠前',
+    componentProps: {
+      style: 'width:119px',
+    },
   },
   {
-    field: 'component',
-    label: '组件',
-    component: 'Input',
-    defaultValue: 'layout',
-    dynamicDisabled: ({ values }) => !isMenu(values.type) || !isComponent(values.mode),
+    field: 'isShow',
+    label: '显示',
+    component: 'RadioButtonGroup',
+    defaultValue: 2,
+    required: true,
+    componentProps: {
+      options: [
+        { label: '显示', value: 2 },
+        { label: '隐藏', value: 1 },
+      ],
+    },
+    show: ({ values }) => isMenu(values.type),
   },
   {
     field: 'status',
@@ -243,8 +203,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: 2,
     componentProps: {
       options: [
-        { label: '禁用', value: 1 },
         { label: '启用', value: 2 },
+        { label: '禁用', value: 1 },
       ],
     },
   },

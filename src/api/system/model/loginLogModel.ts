@@ -4,7 +4,7 @@ import { BasicFetchResult, BasicPageParams, BasicResult } from '/@/api/model/bas
 export type LoginLogListParams = BasicPageParams & {
   name: string;
   ip: string;
-  operType: number;
+  type: number;
   createdDate: any;
 };
 
@@ -16,7 +16,7 @@ export type LoginLogItem = BasicResult & {
   device: string;
   os: string;
   browser: string;
-  operType: number;
+  type: number;
   remark: string;
 };
 

@@ -1,15 +1,10 @@
 <template>
   <div class="p-4">
     <template v-for="src in imgList" :key="src">
-      <img :src="src" v-show="false" />
+      <img :src="src" v-show="false" alt="" />
     </template>
     <DetailModal :info="rowInfo" @register="registerModal" />
     <BasicTable @register="register" class="error-handle-table">
-      <template #toolbar>
-        <a-button @click="fireVueError" type="primary"> 点击触发vue错误 </a-button>
-        <a-button @click="fireResourceError" type="primary"> 点击触发资源加载错误 </a-button>
-        <a-button @click="fireAjaxError" type="primary"> 点击触发ajax错误 </a-button>
-      </template>
       <template #action="{ record }">
         <TableAction :actions="[{ label: '详情', onClick: handleDetail.bind(null, record) }]" />
       </template>
@@ -25,7 +20,6 @@
   import { useModal } from '/@/components/Modal';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useErrorLogStore } from '/@/store/modules/errorLog';
-  import { fireErrorApi } from '/@/api/demo/error';
   import { getColumns } from './data';
   import { cloneDeep } from 'lodash-es';
 
@@ -64,17 +58,5 @@
   function handleDetail(row: ErrorLogInfo) {
     rowInfo.value = row;
     openModal(true);
-  }
-
-  function fireVueError() {
-    throw new Error('fire vue error!');
-  }
-
-  function fireResourceError() {
-    imgList.value.push(`${new Date().getTime()}.png`);
-  }
-
-  async function fireAjaxError() {
-    await fireErrorApi();
   }
 </script>

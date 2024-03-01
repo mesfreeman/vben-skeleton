@@ -8,8 +8,9 @@ import { RoleLite } from '/@/api/system/model/roleModel';
 
 // 账号简单信息
 export interface AccountLite {
+  id: number;
+  name: string;
   email: string;
-  account: string;
 }
 
 // 账号列表请求参数

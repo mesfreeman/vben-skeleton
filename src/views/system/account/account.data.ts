@@ -1,7 +1,8 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Tag, Avatar } from 'ant-design-vue';
+import { Avatar } from 'ant-design-vue';
 import { liteRoles } from '/@/api/common';
+import { showTagByCommonStatus } from '/@/utils/show';
 import defaultImg from '/@/assets/images/header.jpg';
 
 export const columns: BasicColumn[] = [
@@ -22,7 +23,7 @@ export const columns: BasicColumn[] = [
   {
     title: '账号',
     dataIndex: 'username',
-    width: 150,
+    width: 200,
     sorter: true,
     customRender: ({ record }) => {
       const nickname = record.nickname || '-';
@@ -32,7 +33,7 @@ export const columns: BasicColumn[] = [
   {
     title: '邮箱',
     dataIndex: 'email',
-    width: 180,
+    width: 200,
   },
   {
     title: '手机号',
@@ -46,11 +47,7 @@ export const columns: BasicColumn[] = [
     sorter: true,
     defaultSortOrder: 'descend',
     customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 2;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '禁用';
-      return h(Tag, { color: color }, () => text);
+      return showTagByCommonStatus(record.status);
     },
   },
   {
@@ -83,7 +80,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'name',
     label: '账号',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: { span: 4 },
   },
   {
     field: 'status',
@@ -95,7 +92,7 @@ export const searchFormSchema: FormSchema[] = [
         { label: '启用', value: 2 },
       ],
     },
-    colProps: { span: 6 },
+    colProps: { span: 3 },
   },
 ];
 
@@ -110,7 +107,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '头像',
     field: 'avatar',
-    slot: 'avatarSolt',
+    slot: 'avatarSlot',
     defaultValue: defaultImg,
     component: 'Input',
   },

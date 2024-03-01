@@ -11,5 +11,6 @@ export { default as RadioButtonGroup } from './src/components/RadioButtonGroup.v
 export { default as ApiTreeSelect } from './src/components/ApiTreeSelect.vue';
 export { default as ApiRadioGroup } from './src/components/ApiRadioGroup.vue';
 export { default as ApiCascader } from './src/components/ApiCascader.vue';
+export { default as InputTag } from './src/components/InputTag.vue';
 
 export { BasicForm };

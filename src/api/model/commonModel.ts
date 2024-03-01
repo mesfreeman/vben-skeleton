@@ -24,10 +24,10 @@ export interface MyInfoResult {
   username: string;
   nickname: string;
   email: string;
-  avatar: string;
   phone: string;
+  avatar: string;
+  homePath?: string;
   desc?: string; // @todo 后面移除该属性
-  homePath?: string; // todo 移除该属性
   roles?: RoleInfo[]; // @todo 后面移除该属性
 }
 

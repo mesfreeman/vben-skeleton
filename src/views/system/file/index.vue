@@ -48,6 +48,7 @@
 <script lang="ts">
   import { defineComponent, unref } from 'vue';
   import { useModal } from '/@/components/Modal';
+  import AButton from '/@/components/Button/src/BasicButton.vue';
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { useCopyToClipboard } from '/@/hooks/web/useCopyToClipboard';
   import { useMessage } from '/@/hooks/web/useMessage';
@@ -62,7 +63,7 @@
 
   export default defineComponent({
     name: 'FileManagement',
-    components: { BasicTable, TableAction, ConfigModal, Upload },
+    components: { AButton, BasicTable, TableAction, ConfigModal, Upload },
     setup() {
       const { uploadUrl } = useGlobSetting();
       const { createMessage } = useMessage();
@@ -76,6 +77,7 @@
           labelWidth: 80,
           schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          colon: true,
         },
         useSearchForm: true,
         showTableSetting: true,
@@ -101,17 +103,17 @@
       // 上传文件
       function handleUpload(info: any) {
         if (info.file.status === 'error') {
-          createMessage.error('文件上传失败', 3);
+          createMessage.error('文件上传失败');
           return;
         }
 
         if (info.file.status === 'done') {
           if (info.file.response.code === 0) {
-            createMessage.success('文件上传成功', 3);
+            createMessage.success('文件上传成功');
             reload();
             return;
           }
-          createMessage.warning(info.file.response.message, 3);
+          createMessage.warning(info.file.response.message);
           return;
         }
       }
@@ -125,7 +127,7 @@
       function handleCopyUrl(record: Recordable) {
         clipboardRef.value = record.fileUrl;
         if (unref(copiedRef)) {
-          createMessage.success('文件URL已复制到剪贴板', 3);
+          createMessage.success('文件URL已复制到剪贴板');
         }
       }
 
@@ -133,7 +135,7 @@
       async function handleDelete(record: Recordable) {
         const res = await fileDelete({ id: record.id });
         if (res.id > 0) {
-          createMessage.success('删除文件成功', 3);
+          createMessage.success('删除文件成功');
           await reload();
         }
       }

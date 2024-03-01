@@ -32,7 +32,6 @@
   import 'tinymce/plugins/directionality';
   import 'tinymce/plugins/fullscreen';
   import 'tinymce/plugins/hr';
-  import 'tinymce/plugins/insertdatetime';
   import 'tinymce/plugins/link';
   import 'tinymce/plugins/lists';
   import 'tinymce/plugins/media';
@@ -44,14 +43,15 @@
   import 'tinymce/plugins/print';
   import 'tinymce/plugins/save';
   import 'tinymce/plugins/searchreplace';
-  import 'tinymce/plugins/spellchecker';
   import 'tinymce/plugins/tabfocus';
-  // import 'tinymce/plugins/table';
+  import 'tinymce/plugins/table';
   import 'tinymce/plugins/template';
   import 'tinymce/plugins/textpattern';
   import 'tinymce/plugins/visualblocks';
   import 'tinymce/plugins/visualchars';
   import 'tinymce/plugins/wordcount';
+  import 'tinymce/plugins/emoticons';
+  import 'tinymce/plugins/help';
 
   import {
     defineComponent,
@@ -70,7 +70,8 @@
   import { onMountedOrActivated } from '/@/hooks/core/onMountedOrActivated';
   import { useDesign } from '/@/hooks/web/useDesign';
   import { isNumber } from '/@/utils/is';
-  import { useAppStore } from '/@/store/modules/app';
+  import { useRootSetting } from '/@/hooks/setting/useRootSetting';
+  import { ThemeEnum } from '/@/enums/appEnum';
 
   const tinymceProps = {
     options: {
@@ -80,7 +81,6 @@
     value: {
       type: String,
     },
-
     toolbar: {
       type: Array as PropType<string[]>,
       default: toolbar,
@@ -95,7 +95,7 @@
     height: {
       type: [Number, String] as PropType<string | number>,
       required: false,
-      default: 400,
+      default: 500,
     },
     width: {
       type: [Number, String] as PropType<string | number>,
@@ -113,7 +113,7 @@
     components: { ImgUpload },
     inheritAttrs: false,
     props: tinymceProps,
-    emits: ['change', 'update:modelValue', 'inited', 'init-error'],
+    emits: ['change', 'update:modelValue', 'invited', 'init-error'],
     setup(props, { emit, attrs }) {
       const editorRef = ref<Nullable<Editor>>(null);
       const fullscreen = ref(false);
@@ -121,8 +121,6 @@
       const elRef = ref<Nullable<HTMLElement>>(null);
 
       const { prefixCls } = useDesign('tinymce-container');
-
-      const appStore = useAppStore();
 
       const tinymceContent = computed(() => props.modelValue);
 
@@ -134,30 +132,35 @@
         return width;
       });
 
+      const { getDarkMode } = useRootSetting();
       const skinName = computed(() => {
-        return appStore.getDarkMode === 'light' ? 'oxide' : 'oxide-dark';
+        return getDarkMode.value === ThemeEnum.LIGHT ? 'oxide' : 'oxide-dark';
       });
 
+      const publicPath = import.meta.env.VITE_PUBLIC_PATH || '/';
       const initOptions = computed((): RawEditorSettings => {
         const { height, options, toolbar, plugins } = props;
-        const publicPath = import.meta.env.VITE_PUBLIC_PATH || '/';
+
         return {
           selector: `#${unref(tinymceId)}`,
           height,
           toolbar,
-          menubar: 'file edit insert view format table',
+          menubar: 'file edit insert view format table help',
           plugins,
+          paste_data_images: true,
           branding: false,
           default_link_target: '_blank',
           link_title: false,
-          object_resizing: false,
-          auto_focus: true,
+          object_resizing: true,
           skin: skinName.value,
           skin_url: publicPath + 'resource/tinymce/skins/ui/' + skinName.value,
+          language: 'zh_CN',
+          language_url: publicPath + 'resource/tinymce/languages/zh_CN.js',
+          emoticons_database_url: publicPath + 'resource/tinymce/js/emojis.min.js',
           content_css:
             publicPath + 'resource/tinymce/skins/ui/' + skinName.value + '/content.min.css',
           ...options,
-          setup: (editor: Editor) => {
+          setup: (editor: any) => {
             editorRef.value = editor;
             editor.on('init', (e) => initSetup(e));
           },
@@ -166,12 +169,12 @@
 
       const disabled = computed(() => {
         const { options } = props;
-        const getdDisabled = options && Reflect.get(options, 'readonly');
+        const getDisabled = options && Reflect.get(options, 'readonly');
         const editor = unref(editorRef);
         if (editor) {
-          editor.setMode(getdDisabled ? 'readonly' : 'design');
+          editor.setMode(getDisabled ? 'readonly' : 'design');
         }
-        return getdDisabled ?? false;
+        return getDisabled ?? false;
       });
 
       watch(
@@ -197,17 +200,15 @@
       });
 
       onBeforeUnmount(() => {
-        destory();
+        destroy();
       });
 
       onDeactivated(() => {
-        destory();
+        destroy();
       });
 
-      function destory() {
-        if (tinymce !== null) {
-          tinymce?.remove?.(unref(initOptions).selector!);
-        }
+      function destroy() {
+        tinymce?.remove?.(unref(initOptions).selector!);
       }
 
       function initEditor() {
@@ -218,7 +219,7 @@
         tinymce
           .init(unref(initOptions))
           .then((editor) => {
-            emit('inited', editor);
+            emit('invited', editor);
           })
           .catch((err) => {
             emit('init-error', err);
@@ -237,7 +238,7 @@
         bindHandlers(e, attrs, unref(editorRef));
       }
 
-      function setValue(editor: Recordable, val: string, prevVal?: string) {
+      function setValue(editor: Recordable, val: any, prevVal?: string) {
         if (
           editor &&
           typeof val === 'string' &&
@@ -296,7 +297,7 @@
           return;
         }
         const content = editor?.getContent() ?? '';
-        const val = content?.replace(getUploadingImgName(name), `<img src="${url}"/>`) ?? '';
+        const val = content?.replace(getUploadingImgName(name), `<img src="${url}" alt=""/>`) ?? '';
         setValue(editor, val);
       }
 
@@ -333,6 +334,10 @@
     textarea {
       z-index: -1;
       visibility: hidden;
+    }
+
+    .tox-menu {
+      z-index: 99999;
     }
   }
 </style>
