@@ -18,7 +18,7 @@
   import { BasicForm, useForm } from '/@/components/Form';
   import { CollapseContainer } from '/@/components/Container';
   import { PasswordFormSchema } from '/@/views/base/myInfo/myInfo.data';
-  import { modifyMypwd } from '/@/api/common';
+  import { modifyMyPwd } from '/@/api/common';
   import { useAdminStore } from '/@/store/modules/admin';
   import { useMessage } from '/@/hooks/web/useMessage';
 
@@ -37,7 +37,7 @@
         try {
           const values = await validate();
           const { oldPwd, newPwd } = values;
-          const result = await modifyMypwd({ oldPwd: oldPwd, newPwd: newPwd });
+          const result = await modifyMyPwd({ oldPwd: oldPwd, newPwd: newPwd });
           if (result.id > 0) {
             createMessage.success('修改密码成功，即将退出请重新登录~');
             setTimeout(() => {

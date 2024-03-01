@@ -22,6 +22,7 @@
           labelWidth: 90,
           schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          colon: true,
         },
         useSearchForm: true,
         showTableSetting: true,

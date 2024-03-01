@@ -96,7 +96,7 @@
             handleLock();
             break;
           case 'myInfo':
-            go('/base/myInfo');
+            go('/base/myInfo/index');
             break;
         }
       }

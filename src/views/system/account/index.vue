@@ -39,6 +39,7 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useModal } from '/@/components/Modal';
   import { useDrawer } from '/@/components/Drawer';
+  import AButton from '/@/components/Button/src/BasicButton.vue';
   import AccountDrawer from './AccountDrawer.vue';
   import ModifyPwdModal from './ModifyPwdModal.vue';
 
@@ -47,9 +48,9 @@
 
   export default defineComponent({
     name: 'AccountManagement',
-    components: { BasicTable, AccountDrawer, ModifyPwdModal, TableAction },
+    components: { AButton, BasicTable, AccountDrawer, ModifyPwdModal, TableAction },
     setup() {
-      const { notification } = useMessage();
+      const { createMessage } = useMessage();
       const [registerModal, { openModal }] = useModal();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload }] = useTable({
@@ -60,6 +61,7 @@
           labelWidth: 50,
           schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          colon: true,
         },
         useSearchForm: true,
         showTableSetting: true,
@@ -95,10 +97,7 @@
       async function handleDelete(record: Recordable) {
         const res = await accountDelete({ id: record.id });
         if (res.id > 0) {
-          notification.success({
-            message: '删除账号成功',
-            duration: 3,
-          });
+          createMessage.success('删除账号成功');
           await reload();
         }
       }

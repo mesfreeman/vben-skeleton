@@ -4,60 +4,39 @@
     @register="registerDrawer"
     showFooter
     :title="getTitle"
-    width="600px"
+    width="45%"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm">
-      <template #menuSolt="{ model, field }">
-        <BasicTree
-          v-model:value="model[field]"
-          :treeData="treeData"
-          :replaceFields="{ title: 'name', key: 'id' }"
-          :checkable="true"
-          :toolbar="true"
-          :search="true"
-          :expandOnSearch="true"
-        />
-      </template>
-    </BasicForm>
+    <BasicForm @register="registerForm" />
   </BasicDrawer>
 </template>
 <script lang="ts">
   import { defineComponent, ref, computed, unref } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './role.data';
+  import { templateFormSchema } from './email.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
-  import { BasicTree, TreeItem } from '/@/components/Tree';
+
+  import { emailTemplateAdd, emailTemplateModify } from '/@/api/system/email';
   import { useMessage } from '/@/hooks/web/useMessage';
 
-  import { menuList } from '/@/api/system/menu';
-  import { roleAdd, roleModify } from '/@/api/system/role';
-
   export default defineComponent({
-    name: 'RoleDrawer',
-    components: { BasicDrawer, BasicForm, BasicTree },
+    name: 'TemplateDrawer',
+    components: { BasicDrawer, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const treeData = ref<TreeItem[]>([]);
       const { createMessage } = useMessage();
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
-        labelWidth: 60,
-        schemas: formSchema,
+        layout: 'vertical',
+        schemas: templateFormSchema,
         showActionButtonGroup: false,
-        colon: true,
       });
 
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
         await resetFields();
         setDrawerProps({ confirmLoading: false });
-
-        // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
-        if (unref(treeData).length === 0) {
-          treeData.value = (await menuList({ status: 2 })) as any as TreeItem[];
-        }
-
         isUpdate.value = !!data?.isUpdate;
+
         if (unref(isUpdate)) {
           await setFieldsValue({
             ...data.record,
@@ -65,7 +44,7 @@
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增角色' : '编辑角色'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增模板' : '编辑模板'));
 
       async function handleSubmit() {
         try {
@@ -73,11 +52,10 @@
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
           if (values.id == 0 || typeof values.id == undefined || !values.id) {
-            result = await roleAdd(values);
+            result = await emailTemplateAdd(values);
           } else {
-            result = await roleModify(values);
+            result = await emailTemplateModify(values);
           }
-
           if (result.id > 0) {
             closeDrawer();
             emit('success');
@@ -93,7 +71,6 @@
         registerForm,
         getTitle,
         handleSubmit,
-        treeData,
       };
     },
   });

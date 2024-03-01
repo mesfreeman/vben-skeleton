@@ -8,7 +8,7 @@
 
 .tox :not(svg){font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;line-height: inherit;color: inherit;text-align: inherit;text-decoration: inherit;text-shadow: inherit;text-transform: inherit;white-space: inherit;vertical-align: inherit;cursor: inherit;box-sizing: inherit;direction: inherit;-webkit-tap-highlight-color: inherit;}
 
-.tox :not(svg){position: static;float: none;width: auto;height: auto;max-width: none;padding: 0;margin: 0;background: 0 0;border: 0;outline: 0;}
+.tox :not(svg){position: static;float: none;width: auto;height: auto;max-width: none;padding: 0;margin: 0;background: 0 0;border: 0;outline: 0;z-index: 99999999;}
 
 .tox:not([dir=rtl]){text-align: left;direction: ltr;}
 
@@ -312,11 +312,11 @@ button::-moz-focus-inner{border: 0;}
 
 .tox[dir=rtl] .tox-user__avatar+.tox-user__name{margin-right: 8px;}
 
-.tox .tox-dialog-wrap{position: fixed;top: 0;right: 0;bottom: 0;left: 0;z-index: 1100;display: flex;align-items: center;justify-content: center;}
+.tox .tox-dialog-wrap{position: fixed;top: 0;right: 0;bottom: 0;left: 0;z-index: 0;display: flex;align-items: center;justify-content: center;}
 
-.tox .tox-dialog-wrap__backdrop{position: absolute;top: 0;right: 0;bottom: 0;left: 0;z-index: 1101;background-color: rgba(255,255,255,.75);}
+.tox .tox-dialog-wrap__backdrop{position: absolute;top: 0;right: 0;bottom: 0;left: 0;z-index: 3;background-color: rgba(255,255,255,.75);}
 
-.tox .tox-dialog{position: relative;z-index: 1102;display: flex;width: 95vw;max-width: 480px;max-height: 100%;overflow: hidden;background-color: #fff;border-color: #ccc;border-style: solid;border-width: 1px;border-radius: 3px;box-shadow: 0 16px 16px -10px rgba(34,47,62,.15),0 0 40px 1px rgba(34,47,62,.15);flex-direction: column;}
+.tox .tox-dialog{position: relative;z-index: 99999;display: flex;width: 95vw;max-width: 480px;max-height: 100%;overflow: hidden;background-color: #fff;border-color: #ccc;border-style: solid;border-width: 1px;border-radius: 3px;box-shadow: 0 16px 16px -10px rgba(34,47,62,.15),0 0 40px 1px rgba(34,47,62,.15);flex-direction: column;}
 
 .tox .tox-dialog__header{position: relative;display: flex;padding: 8px 16px 0 16px;margin-bottom: 16px;font-size: 16px;color: #222f3e;background-color: #fff;border-bottom: none;align-items: center;justify-content: space-between;}
 
@@ -702,7 +702,7 @@ body.tox-dialog__disable-scroll{overflow: hidden;}
 
 .tox .tox-spinner>div:nth-child(2){animation-delay: -.16s;}@keyframes tam-bouncing-dots{0%,100%,80%{transform: scale(0);}
 
-40%{transform: scale(1);}}
+                                                               40%{transform: scale(1);}}
 
 .tox:not([dir=rtl]) .tox-spinner>div:not(:first-child){margin-left: 4px;}
 

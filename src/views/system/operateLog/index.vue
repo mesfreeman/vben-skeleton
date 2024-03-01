@@ -35,9 +35,10 @@
         api: operateLogList,
         columns,
         formConfig: {
-          labelWidth: 90,
+          labelWidth: 80,
           schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          colon: true,
         },
         useSearchForm: true,
         showTableSetting: true,

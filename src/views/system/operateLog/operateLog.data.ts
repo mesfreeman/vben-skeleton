@@ -2,8 +2,10 @@ import { BasicColumn, FormSchema } from '/@/components/Table';
 import { DescItem } from '/@/components/Description';
 import zhCn from 'moment/dist/locale/zh-cn';
 import { h } from 'vue';
-import { Tag, Textarea } from 'ant-design-vue';
+import { Tag } from 'ant-design-vue';
+import Textarea from 'ant-design-vue/es/input/Textarea';
 import { isJson } from '/@/utils/is';
+import { showTagByHttpStatus } from '/@/utils/show';
 
 export const columns: BasicColumn[] = [
   {
@@ -56,10 +58,7 @@ export const columns: BasicColumn[] = [
     width: 50,
     sorter: true,
     customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 200;
-      const color = enable ? 'green' : 'red';
-      return h(Tag, { color: color }, () => status);
+      return showTagByHttpStatus(record.status);
     },
   },
   {
@@ -175,8 +174,7 @@ export const detailSchema: DescItem[] = [
     label: '状态码',
     field: 'status',
     render: (value, _) => {
-      const color = value != 200 ? 'red' : 'green';
-      return h(Tag, { color: color }, () => value);
+      return showTagByHttpStatus(value);
     },
   },
   {

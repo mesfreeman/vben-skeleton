@@ -1,7 +1,6 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
+import { showTagByCommonStatus } from '/@/utils/show';
 
 export const columns: BasicColumn[] = [
   {
@@ -13,7 +12,7 @@ export const columns: BasicColumn[] = [
   {
     title: '名称',
     dataIndex: 'name',
-    width: 200,
+    width: 280,
   },
   {
     title: '状态',
@@ -22,11 +21,7 @@ export const columns: BasicColumn[] = [
     sorter: true,
     defaultSortOrder: 'descend',
     customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 2;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '禁用';
-      return h(Tag, { color: color }, () => text);
+      return showTagByCommonStatus(record.status);
     },
   },
   {
@@ -58,7 +53,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'name',
     label: '名称',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: { span: 4 },
   },
   {
     field: 'status',
@@ -70,7 +65,7 @@ export const searchFormSchema: FormSchema[] = [
         { label: '启用', value: 2 },
       ],
     },
-    colProps: { span: 6 },
+    colProps: { span: 4 },
   },
 ];
 

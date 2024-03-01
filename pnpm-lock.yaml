@@ -45,8 +45,8 @@ dependencies:
     specifier: ^1.1.0
     version: 1.1.0
   moment:
-    specifier: ^2.29.1
-    version: 2.29.1
+    specifier: ^2.29.4
+    version: 2.29.4
   nprogress:
     specifier: ^0.2.0
     version: 0.2.0
@@ -60,14 +60,17 @@ dependencies:
     specifier: ^1.4.4
     version: 1.4.4
   qs:
-    specifier: ^6.10.1
-    version: 6.10.1
+    specifier: ^6.10.3
+    version: 6.10.3
   resize-observer-polyfill:
     specifier: ^1.5.1
     version: 1.5.1
   sortablejs:
     specifier: ^1.14.0
     version: 1.14.0
+  tinymce:
+    specifier: ^5.10.7
+    version: 5.10.7
   vue:
     specifier: ^3.2.21
     version: 3.2.21
@@ -193,9 +196,6 @@ devDependencies:
   fs-extra:
     specifier: ^10.0.0
     version: 10.0.0
-  husky:
-    specifier: ^7.0.4
-    version: 7.0.4
   inquirer:
     specifier: ^8.2.0
     version: 8.2.0
@@ -3407,7 +3407,7 @@ packages:
       dom-scroll-into-view: 2.0.1
       lodash: 4.17.21
       lodash-es: 4.17.21
-      moment: 2.29.1
+      moment: 2.29.4
       omit.js: 2.0.2
       resize-observer-polyfill: 1.5.1
       scroll-into-view-if-needed: 2.2.28
@@ -6757,12 +6757,6 @@ packages:
     engines: {node: '>=10.17.0'}
     dev: true
 
-  /husky@7.0.4:
-    resolution: {integrity: sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==}
-    engines: {node: '>=12'}
-    hasBin: true
-    dev: true
-
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -8672,8 +8666,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /moment@2.29.1:
-    resolution: {integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==}
+  /moment@2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
     dev: false
 
   /mozjpeg@7.1.1:
@@ -9724,8 +9718,8 @@ packages:
       yargs: 13.3.2
     dev: false
 
-  /qs@6.10.1:
-    resolution: {integrity: sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg==}
+  /qs@6.10.3:
+    resolution: {integrity: sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==}
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
@@ -11028,6 +11022,10 @@ packages:
   /tinycolor2@1.4.2:
     resolution: {integrity: sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==}
     dev: true
+
+  /tinymce@5.10.7:
+    resolution: {integrity: sha512-9UUjaO0R7FxcFo0oxnd1lMs7H+D0Eh+dDVo5hKbVe1a+VB0nit97vOqlinj+YwgoBDt6/DSCUoWqAYlLI8BLYA==}
+    dev: false
 
   /tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}

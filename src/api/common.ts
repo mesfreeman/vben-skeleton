@@ -18,7 +18,7 @@ enum Api {
   MyInfo = '/base/myInfo',
   MyMenus = '/base/myMenus',
   MyPerms = '/base/myPerms',
-  ModifyMypwd = '/base/modifyMyPwd',
+  ModifyMyPwd = '/base/modifyMyPwd',
   ModifyMyInfo = '/base/modifyMyInfo',
   LiteRoles = '/base/liteRoles',
   LiteAccounts = '/base/liteAccounts',
@@ -50,8 +50,8 @@ export function myPerms() {
 }
 
 // 修改我的密码
-export function modifyMypwd(params: ModifyMyPwdParams) {
-  return defHttp.post<BasicIdResult>({ url: Api.ModifyMypwd, params });
+export function modifyMyPwd(params: ModifyMyPwdParams) {
+  return defHttp.post<BasicIdResult>({ url: Api.ModifyMyPwd, params });
 }
 
 // 修改我的信息

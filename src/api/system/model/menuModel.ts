@@ -13,7 +13,6 @@ export type MenuItem = BasicResult & {
   name: string;
   icon: string;
   path: string;
-  component: any;
   type: number;
   weight: number;
   keepalive: number;
@@ -30,7 +29,6 @@ export interface MenuAddParams {
   name: string;
   icon: string;
   path: string;
-  component: string;
   type: number;
   weight: number;
   keepalive: number;
