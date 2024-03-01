@@ -1,7 +1,7 @@
 <template>
   <CollapseContainer title="账号设置" :canExpan="false">
     <BasicForm @register="register">
-      <template #avatarSolt>
+      <template #avatarSlot>
         <Upload
           :headers="headers"
           :action="uploadUrl"
@@ -14,14 +14,14 @@
         </Upload>
       </template>
     </BasicForm>
-    <Button type="primary" @click="handleSubmit"> 保存 </Button>
+    <a-button type="primary" @click="handleSubmit"> 保存 </a-button>
   </CollapseContainer>
 </template>
 <script lang="ts">
-  import { Button } from 'ant-design-vue';
   import { defineComponent, ref, onMounted } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { CollapseContainer } from '/@/components/Container';
+  import AButton from '/@/components/Button/src/BasicButton.vue';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { Upload } from 'ant-design-vue';
 
@@ -34,9 +34,9 @@
 
   export default defineComponent({
     components: {
+      AButton,
       BasicForm,
       CollapseContainer,
-      Button,
       Upload,
     },
     setup() {
@@ -57,16 +57,16 @@
       // 上传头像
       function handleUpload(info: any) {
         if (info.file.status === 'error') {
-          createMessage.error('头像上传失败', 3);
+          createMessage.error('头像上传失败');
           return;
         }
 
         if (info.file.status === 'done') {
           if (info.file.response.code === 0) {
-            avatarUrl.value = info.file.response.result.thumbail;
+            avatarUrl.value = info.file.response.result.thumbnail;
             return;
           }
-          createMessage.warning(info.file.response.message, 3);
+          createMessage.warning(info.file.response.message);
           return;
         }
       }

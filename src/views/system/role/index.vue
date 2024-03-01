@@ -31,18 +31,19 @@
   import { defineComponent } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { roleList, roleDelete } from '/@/api/system/role';
-
   import { useDrawer } from '/@/components/Drawer';
-  import RoleDrawer from './RoleDrawer.vue';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
+  import RoleDrawer from './RoleDrawer.vue';
   import { columns, searchFormSchema } from './role.data';
-  import { notification } from 'ant-design-vue/es';
+  import { roleList, roleDelete } from '/@/api/system/role';
+  import AButton from '/@/components/Button/src/BasicButton.vue';
 
   export default defineComponent({
     name: 'RoleManagement',
-    components: { BasicTable, RoleDrawer, TableAction },
+    components: { AButton, BasicTable, RoleDrawer, TableAction },
     setup() {
+      const { createMessage } = useMessage();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload }] = useTable({
         title: '角色列表',
@@ -52,6 +53,7 @@
           labelWidth: 50,
           schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          colon: true,
         },
         useSearchForm: true,
         showTableSetting: true,
@@ -83,10 +85,7 @@
       async function handleDelete(record: Recordable) {
         const res = await roleDelete({ id: record.id });
         if (res.id > 0) {
-          notification.success({
-            message: '删除角色成功',
-            duration: 3,
-          });
+          createMessage.success('删除角色成功');
           await reload();
         }
       }

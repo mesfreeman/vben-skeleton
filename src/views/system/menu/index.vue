@@ -7,14 +7,20 @@
         <a-button type="primary" @click="handleCreate"> 新增菜单 </a-button>
       </template>
       <template #nameSlot="{ record }">
-        <Icon v-if="record.icon !== ''" :icon="record.icon" /> {{ record.name }}
+        <Icon v-if="record?.icon !== ''" :icon="record?.icon" /> {{ record?.name }}
+      </template>
+      <template #pathSlot="{ record }">
+        <div>
+          <Tag :color="getColor(record?.type)">{{ getType(record?.type) }}</Tag>
+          <span style="margin-left: 10px">{{ record?.path }}</span>
+        </div>
       </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
             {
               icon: 'ant-design:plus-square-outlined',
-              disabled: record.type === 3,
+              disabled: record?.type === 3,
               onClick: handleCreate.bind(null, record),
             },
             {
@@ -41,19 +47,21 @@
   import { defineComponent, nextTick } from 'vue';
 
   import { Icon } from '/@/components/Icon';
+  import AButton from '/@/components/Button/src/BasicButton.vue';
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { menuList, menuDelete } from '/@/api/system/menu';
-
   import { useDrawer } from '/@/components/Drawer';
-  import MenuDrawer from './MenuDrawer.vue';
+  import { useMessage } from '/@/hooks/web/useMessage';
+  import { Tag } from 'ant-design-vue';
 
-  import { columns, searchFormSchema } from './menu.data';
-  import { notification } from 'ant-design-vue/es';
+  import MenuDrawer from './MenuDrawer.vue';
+  import { menuList, menuDelete } from '/@/api/system/menu';
+  import { columns, searchFormSchema, isDir, isMenu, isApi } from './menu.data';
 
   export default defineComponent({
     name: 'MenuManagement',
-    components: { BasicTable, MenuDrawer, TableAction, Icon },
+    components: { BasicTable, MenuDrawer, TableAction, Icon, Tag, AButton },
     setup() {
+      const { createMessage } = useMessage();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload, expandAll, collapseAll }] = useTable({
         title: '菜单列表',
@@ -63,6 +71,7 @@
           labelWidth: 70,
           schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          colon: true,
         },
         isTreeTable: true,
         pagination: false,
@@ -80,6 +89,15 @@
           fixed: undefined,
         },
       });
+
+      // In the script:
+      const getColor = (type: number) => {
+        return isDir(type) ? 'blue' : isMenu(type) ? 'green' : 'red';
+      };
+
+      const getType = (type: number) => {
+        return isDir(type) ? '目录' : isMenu(type) ? '菜单' : '接口';
+      };
 
       // 新增菜单
       function handleCreate(record: Recordable) {
@@ -103,10 +121,7 @@
       async function handleDelete(record: Recordable) {
         const res = await menuDelete({ id: record.id });
         if (res.id > 0) {
-          notification.success({
-            message: '删除菜单成功',
-            duration: 3,
-          });
+          createMessage.success('删除菜单成功');
           await reload();
         }
       }
@@ -120,6 +135,8 @@
       }
 
       return {
+        getColor,
+        getType,
         registerTable,
         registerDrawer,
         handleCreate,
@@ -131,5 +148,6 @@
         collapseAll,
       };
     },
+    methods: { isDir, isMenu, isApi },
   });
 </script>

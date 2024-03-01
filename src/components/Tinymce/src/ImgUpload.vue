@@ -4,6 +4,7 @@
       name="file"
       multiple
       @change="handleChange"
+      :headers="headers"
       :action="uploadUrl"
       :showUploadList="false"
       accept=".jpg,.jpeg,.gif,.png,.webp"
@@ -18,10 +19,12 @@
   import { Upload } from 'ant-design-vue';
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useGlobSetting } from '/@/hooks/setting';
+  import AButton from '/@/components/Button/src/BasicButton.vue';
+  import { getToken } from '/@/utils/auth';
 
   export default defineComponent({
     name: 'TinymceImageUpload',
-    components: { Upload },
+    components: { AButton, Upload },
     props: {
       fullscreen: {
         type: Boolean,
@@ -49,7 +52,8 @@
       function handleChange(info: Recordable) {
         const file = info.file;
         const status = file?.status;
-        const url = file?.response?.url;
+        const code = file?.response?.code;
+        const url = file?.response?.result?.fileUrl;
         const name = file?.name;
 
         if (status === 'uploading') {
@@ -58,8 +62,13 @@
             uploading = true;
           }
         } else if (status === 'done') {
-          emit('done', name, url);
-          uploading = false;
+          if (code === 0 && url !== '') {
+            emit('done', name, url);
+            uploading = false;
+          } else {
+            emit('error');
+            uploading = false;
+          }
         } else if (status === 'error') {
           emit('error');
           uploading = false;
@@ -71,6 +80,7 @@
         handleChange,
         uploadUrl,
         getButtonProps,
+        headers: { Authorization: 'Bearer ' + getToken() },
       };
     },
   });

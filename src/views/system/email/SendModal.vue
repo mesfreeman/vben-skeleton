@@ -2,51 +2,52 @@
   <BasicModal
     v-bind="$attrs"
     @register="registerModal"
-    title="文件配置"
-    okText="保存"
-    width="40%"
+    title="发送邮件"
+    okText="发送"
+    width="65%"
     @ok="handleSubmit"
   >
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts">
+  import BasicModal from '/@/components/Modal/src/BasicModal.vue';
   import { defineComponent } from 'vue';
-  import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { useMessage } from '/@/hooks/web/useMessage';
+  import { useModalInner } from '/@/components/Modal';
+  import { Modal } from 'ant-design-vue';
 
-  import { configFormSchema } from './file.data';
-  import { fileSaveConfig } from '/@/api/system/file';
+  import { sendFormSchema } from './email.data';
+  import { emailBatchSend } from '/@/api/system/email';
 
   export default defineComponent({
-    name: 'ConfigModal',
+    name: 'SendModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup() {
-      const { createMessage } = useMessage();
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const [registerForm, { resetFields, validate }] = useForm({
         layout: 'vertical',
-        schemas: configFormSchema,
+        schemas: sendFormSchema,
         showActionButtonGroup: false,
       });
 
-      const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
+      const [registerModal, { setModalProps, closeModal }] = useModalInner(async () => {
         await resetFields();
         setModalProps({ confirmLoading: false });
-        await setFieldsValue({
-          ...data.record,
-        });
       });
 
       async function handleSubmit() {
         try {
           const values = await validate();
+          delete values.templateId;
           setModalProps({ confirmLoading: true });
-          let result = await fileSaveConfig(values);
-          if (result.id > 0) {
+          let result = await emailBatchSend(values);
+          if (result.total > 0) {
             closeModal();
-            createMessage.success('保存配置成功');
+            Modal.info({
+              title: '发送结果通知',
+              content: `收件人共 ${result.total} 个，成功 ${result.success} 个，失败 ${result.fail} 个`,
+            });
           }
         } finally {
           setModalProps({ confirmLoading: false });

@@ -1,4 +1,5 @@
 // TODO
+// @ts-ignore
 import type { GetManualChunk } from 'rollup';
 
 //
